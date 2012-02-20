@@ -59,7 +59,7 @@
              detached_vcs_color=${detached_vcs_color:-RED}
                       rvm_color=${rvm_color:-GREEN}
                      venv_color=${venv_color:-YELLOW}
-                    clock_color=${clock_color:-WHITE}
+                    clock_color=${clock_color:-GREY}
 
                   hex_vcs_color=${hex_vcs_color:-BLACK}         # gray
 
@@ -338,8 +338,8 @@ set_shell_label() {
                 plain_who_where="${id}$at$host"
 
                 # add trailing " "
-                color_who_where="$color_who_where "
-                plain_who_where="$plain_who_where "
+                color_who_where="$color_who_where"
+                plain_who_where="$plain_who_where"
 
                 # if root then make it root_color
                 if [ "$id" == "root" ]  ; then
@@ -637,7 +637,7 @@ parse_vcs_status() {
         head_local="$vcs_color(${vcs_info}$vcs_color${file_list}$vcs_color)"
 
         ### fringes
-        head_local="${head_local+$vcs_color$head_local }"
+        head_local="${head_local+$vcs_color$head_local}"
         #above_local="${head_local+$vcs_color$head_local\n}"
         #tail_local="${tail_local+$vcs_color $tail_local}${dir_color}"
  }
@@ -645,10 +645,10 @@ parse_vcs_status() {
 parse_rvm_status() {
         local gemset=$(echo $GEM_HOME | awk -F'@' '{print $2}')
         [ "$gemset" != "" ] && gemset="@$gemset"
-        local version=$(echo $MY_RUBY_HOME | awk -F'-' '{print $2}')
+        local version=$(echo $MY_RUBY_HOME | awk -F'-' '{print $2"-"$3}')
         [ "$version" == "$default_rvm_version" ] && version=""
         rvm_info="$version$gemset"
-        [[ "$rvm_info" ]] && rvm_info="$rvm_color[$rvm_info] "
+        [[ "$rvm_info" ]] && rvm_info="$rvm_color[$rvm_info]"
 }
 
 parse_venv_status() {
@@ -712,7 +712,7 @@ prompt_command_function() {
         if [[ "$rc" == "0" ]]; then
                 rc=""
         else
-                rc="$rc_color$rc$colors_reset$bell "
+                rc="$colors_reset($rc_color$rc$colors_reset)$bell"
         fi
 
         cwd=${PWD/$HOME/\~}                     # substitute  "~"
@@ -721,7 +721,7 @@ prompt_command_function() {
         parse_vcs_status
         [[ $rvm_module = "on" ]] && type rvm >&/dev/null && parse_rvm_status
         [[ $venv_module = "on" ]] && type virtualenv >&/dev/null && parse_venv_status
-        [[ $clock_module = "on" ]] && local clock="$clock_color$(date +$clock_format) "
+        [[ $clock_module = "on" ]] && local clock="$colors_reset[$clock_color$(date +$clock_format)$colors_reset]"
 
 
 
@@ -734,7 +734,7 @@ prompt_command_function() {
         # else eval cwd_cmd,  cwd should have path after exection
         eval "${cwd_cmd/\\/cwd=\\\\}"
 
-        PS1="$colors_reset$clock$rc$head_local$venv_info$rvm_info$color_who_where$dir_color$cwd$tail_local$dir_color$prompt_char $colors_reset"
+        PS1="$colors_reset$clock$color_who_where$colors_reset:$dir_color$cwd$tail_local$dir_color$venv_info$rvm_info$head_local$colors_reset$rc$prompt_char$colors_reset "
 
         unset head_local tail_local pwd
  }
