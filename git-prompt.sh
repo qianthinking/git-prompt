@@ -37,7 +37,7 @@
                 dir_color=${dir_color:-CYAN}
                 rc_color=${rc_color:-red}
                 user_id_color=${user_id_color:-blue}
-                root_id_color=${root_id_color:-magenta}
+                root_id_color=${root_id_color:-red}
         else                                            #  only B/W
                 dir_color=${dir_color:-bw_bold}
                 rc_color=${rc_color:-bw_bold}
@@ -45,8 +45,8 @@
         unset cols
 
 	#### prompt character, for root/non-root
-	prompt_char=${prompt_char:-'>'}
-	root_prompt_char=${root_prompt_char:-'>'}
+	prompt_char=${prompt_char:-'$'}
+	root_prompt_char=${root_prompt_char:-'#'}
 
         #### vcs colors
                  init_vcs_color=${init_vcs_color:-WHITE}        # initial
@@ -734,7 +734,7 @@ prompt_command_function() {
         # else eval cwd_cmd,  cwd should have path after exection
         eval "${cwd_cmd/\\/cwd=\\\\}"
 
-        PS1="$colors_reset$clock$color_who_where$colors_reset:$dir_color$cwd$tail_local$dir_color$venv_info$rvm_info$head_local$colors_reset$rc$prompt_char$colors_reset "
+        PS1="$colors_reset$clock$color_who_where$colors_reset:$dir_color$cwd$tail_local$dir_color$venv_info$rvm_info$head_local$colors_reset$rc$user_id_color$prompt_char$colors_reset "
 
         unset head_local tail_local pwd
  }
